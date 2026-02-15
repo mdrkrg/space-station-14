@@ -4,6 +4,8 @@
   name: grille
   description: A flimsy framework of iron rods.
   components:
+    - type: SurfacePorous
+      porosity: 0.5
     - type: MeleeSound
       soundGroups:
         Brute:
@@ -92,6 +94,8 @@
   name: clockwork grille
   description: A flimsy framework of iron rods assembled in traditional Ratvarian fashion.
   components:
+  - type: SurfacePorous
+    porosity: 0.8
   - type: Sprite
     drawdepth: Walls
     sprite: Structures/Walls/clockwork_grille.rsi
