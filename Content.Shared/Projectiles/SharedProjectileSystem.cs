@@ -250,3 +250,10 @@ public record struct ProjectileReflectAttemptEvent(EntityUid ProjUid, Projectile
 /// </summary>
 [ByRefEvent]
 public record struct ProjectileHitEvent(DamageSpecifier Damage, EntityUid Target, EntityUid? Shooter = null);
+
+
+/// <summary>
+/// Raised when a projectile touches but bypasses an entity through holes
+/// </summary>
+[ByRefEvent]
+public record struct ProjectileBypassEvent(EntityUid Target);

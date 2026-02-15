@@ -11,6 +11,7 @@ using Content.Shared.FixedPoint;
 using Content.Shared.Projectiles;
 using Robust.Shared.Physics.Events;
 using Robust.Shared.Player;
+using Robust.Shared.Random;
 
 namespace Content.Server.Projectiles;
 
@@ -22,6 +23,7 @@ public sealed class ProjectileSystem : SharedProjectileSystem
     [Dependency] private readonly DestructibleSystem _destructibleSystem = default!;
     [Dependency] private readonly GunSystem _guns = default!;
     [Dependency] private readonly SharedCameraRecoilSystem _sharedCameraRecoil = default!;
+    [Dependency] private readonly IRobustRandom _random = default!;
 
     public override void Initialize()
     {
@@ -37,6 +39,17 @@ public sealed class ProjectileSystem : SharedProjectileSystem
             return;
 
         var target = args.OtherEntity;
+
+        if (TryComp<SurfacePorousComponent>(target, out var porous)
+            && porous.Porosity > 0.0f
+            && _random.Prob(porous.Porosity))
+        {
+            // Early return, the projectile passes through hole on the target
+            var bypassEv = new ProjectileBypassEvent(target);
+            RaiseLocalEvent(uid, ref bypassEv);
+            return;
+        }
+
         // it's here so this check is only done once before possible hit
         var attemptEv = new ProjectileReflectAttemptEvent(uid, component, false);
         RaiseLocalEvent(target, ref attemptEv);
